@@ -1,3 +1,52 @@
+---
+# ServiceAccount, Role, and RoleBinding are hooks that run BEFORE the cleanup Job
+# They have a higher weight (lower number) so they execute first
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.subscription.name }}-cleanup
+  namespace: {{ .Values.subscription.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.subscription.name }}-cleanup
+  namespace: {{ .Values.subscription.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-9"
+rules:
+- apiGroups:
+  - operators.coreos.com
+  resources:
+  - clusterserviceversions
+  - subscriptions
+  verbs:
+  - get
+  - list
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.subscription.name }}-cleanup
+  namespace: {{ .Values.subscription.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-8"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Values.subscription.name }}-cleanup
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.subscription.name }}-cleanup
+  namespace: {{ .Values.subscription.namespace }}
+---
+# Job is a hook that runs AFTER RBAC resources are created (lower weight = runs later)
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -46,40 +95,3 @@ spec:
           fi
           
           echo "Cleanup completed successfully."
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ .Values.subscription.name }}-cleanup
-  namespace: {{ .Values.subscription.namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: {{ .Values.subscription.name }}-cleanup
-  namespace: {{ .Values.subscription.namespace }}
-rules:
-- apiGroups:
-  - operators.coreos.com
-  resources:
-  - clusterserviceversions
-  - subscriptions
-  verbs:
-  - get
-  - list
-  - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: {{ .Values.subscription.name }}-cleanup
-  namespace: {{ .Values.subscription.namespace }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: {{ .Values.subscription.name }}-cleanup
-subjects:
-- kind: ServiceAccount
-  name: {{ .Values.subscription.name }}-cleanup
-  namespace: {{ .Values.subscription.namespace }}
-
