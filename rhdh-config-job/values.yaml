@@ -13,6 +13,6 @@ gitlab:
   namespace: gitlab
 
 gitops:
-  repoUrl: "https://github.com/rh-trucathon/gitops.git"
+  repoUrl: "https://github.com/rh-opencodequest/gitops.git"
   branch: "main"
 
