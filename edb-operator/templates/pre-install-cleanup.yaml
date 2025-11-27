@@ -80,7 +80,8 @@ spec:
           fi
           
           # Get all CSVs for cloud-native-postgresql that are not referenced
-          CSVS=$(oc get csv -n {{ .Values.subscription.namespace }} -o jsonpath='{range .items[?(@.metadata.name=~"cloud-native-postgresql.*")]}{.metadata.name}{"\n"}{end}' 2>/dev/null || true)
+          # jsonpath doesn't support regex, so we get all CSVs and filter in bash
+          CSVS=$(oc get csv -n {{ .Values.subscription.namespace }} -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null | grep "^cloud-native-postgresql" || true)
           
           if [ -n "$CSVS" ]; then
             echo "Found CSVs: $CSVS"
