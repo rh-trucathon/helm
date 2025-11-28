@@ -26,11 +26,12 @@ spec:
             set -x
             
             # Clone the gitops repo to get playbooks and vars
-            echo "Cloning gitops repository..."
-            git clone --depth 1 --branch ${GITOPS_BRANCH:-main} ${GITOPS_REPO_URL} /tmp/gitops || true
+            # echo "Cloning gitops repository..."
+            # git clone --depth 1 --branch ${GITOPS_BRANCH:-main} ${GITOPS_REPO_URL} /tmp/gitops || true
             
             # Change to the ansible directory
-            cd /tmp/gitops/ansible
+            # cd /tmp/gitops/ansible
+            cd /tmp/ansible
             
             # Run the ansible playbook
             echo "Running ansible playbook for ACS configuration"
@@ -40,4 +41,11 @@ spec:
         envFrom:
         - configMapRef:
             name: acs-config-job-config
-
+        mounts:
+        - name: ansible
+          mountPath: /tmp/ansible
+          readOnly: true
+        volumes:
+        - name: ansible
+          configMap:
+            name: acs-config-job-playbook
