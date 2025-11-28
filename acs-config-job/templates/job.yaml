@@ -41,11 +41,11 @@ spec:
         envFrom:
         - configMapRef:
             name: acs-config-job-config
-        mounts:
+        volumeMounts:
         - name: ansible
           mountPath: /tmp/ansible
           readOnly: true
-        volumes:
-        - name: ansible
-          configMap:
-            name: acs-config-job-playbook
+      volumes:
+      - name: ansible
+        configMap:
+          name: acs-config-job-playbook
