@@ -20,7 +20,6 @@ data:
         gather_facts: no
         vars:
           ansible_connection: local
-          acs_api: https://{{ central_hostname }}/v1
           validate_certs: no
         tasks:
         - name: Get Stackrox central's Route
@@ -37,6 +36,7 @@ data:
 
         - set_fact:
             central_hostname: '{{ central_route.resources[0].spec.host }}:443'
+            acs_api: 'https://{{ central_hostname }}/v1'
 
         - name: Get Stackrox central's admin password
           kubernetes.core.k8s_info:
