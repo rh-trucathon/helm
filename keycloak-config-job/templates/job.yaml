@@ -30,7 +30,7 @@ spec:
             
             # Run the ansible playbook
             echo "Running ansible playbook for cluster: ${CLUSTER}"
-            ansible-playbook -i localhost playbook-configure-keycloak.yaml \
+            ansible-playbook -i localhost playbook.yaml \
               -e cluster=${CLUSTER} \
               -e keycloak_namespace=${KEYCLOAK_NAMESPACE:-rhsso} \
               -e keycloak_realm=${KEYCLOAK_REALM:-openshift}
