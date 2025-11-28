@@ -267,7 +267,7 @@ data:
 
         - name: Load cluster vars
           include_vars:
-            file: "vars/{{ "{{" }} cluster {{ "}}" }}.yml"
+            file: "vars/opencodequest.yaml"
             name: cluster_vars
 
         - name: Extract cluster users
