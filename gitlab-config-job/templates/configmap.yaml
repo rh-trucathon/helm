@@ -16,7 +16,7 @@ metadata:
   name: gitlab-config-job-playbook
   namespace: {{ .Values.namespace }}
 data:
-  vars/opencodequest.yaml: |
+  opencodequest.yaml: |
     opencodequest:
       clusters:
         - name: atlantis
