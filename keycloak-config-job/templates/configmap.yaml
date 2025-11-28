@@ -228,57 +228,57 @@ data:
             - review_profile_execution.id is defined
             - update_execution_result.status | default(0) in [200, 204]
 
-        - name: Display Review profile execution status
-          ansible.builtin.debug:
-            msg: "Review Profile execution requirement: {{ "{{" }} item.requirement {{ "}}" }}"
-          loop: '{{ "{{" }} verify_executions.json | default([]) {{ "}}" }}'
-          when: 
-            - verify_executions.json is defined
-            - item.id == review_profile_execution.id
-          loop_control:
-            label: "{{ "{{" }} item.displayName {{ "}}" }}"
+        # - name: Display Review profile execution status
+        #   ansible.builtin.debug:
+        #     msg: "Review Profile execution requirement: {{ "{{" }} item.requirement {{ "}}" }}"
+        #   loop: '{{ "{{" }} verify_executions.json | default([]) {{ "}}" }}'
+        #   when: 
+        #     - verify_executions.json is defined
+        #     - item.id == review_profile_execution.id
+        #   loop_control:
+        #     label: "{{ "{{" }} item.displayName {{ "}}" }}"
 
-        - name: Load cluster vars
-          include_vars:
-            file: "vars/opencodequest.yaml"
-            name: cluster_vars
+        # - name: Load cluster vars
+        #   include_vars:
+        #     file: "vars/opencodequest.yaml"
+        #     name: cluster_vars
 
-        - name: Extract cluster users
-          set_fact:
-            cluster_users: '{{ "{{" }} cluster_vars.opencodequest.clusters | selectattr("name", "equalto", cluster) | map(attribute="users") | first {{ "}}" }}'
+        # - name: Extract cluster users
+        #   set_fact:
+        #     cluster_users: '{{ "{{" }} cluster_vars.opencodequest.clusters | selectattr("name", "equalto", cluster) | map(attribute="users") | first {{ "}}" }}'
 
-        - name: Create Keycloak users from cluster vars
-          ansible.builtin.uri:
-            url: '{{ "{{" }} keycloak_url {{ "}}" }}/admin/realms/{{ "{{" }} keycloak_realm {{ "}}" }}/users'
-            method: POST
-            body_format: json
-            body:
-              username: '{{ "{{" }} item {{ "}}" }}'
-              email: '{{ "{{" }} item {{ "}}" }}@opentlc.com'
-              emailVerified: true
-              enabled: true
-              firstName: '{{ "{{" }} item | capitalize {{ "}}" }}'
-              lastName: 'User'
-              credentials:
-                - type: password
-                  value: '{{ "{{" }} item[:3] {{ "}}" }}2025!!'
-                  temporary: false
-            headers:
-              Authorization: "Bearer {{ "{{" }} keycloak_access_token {{ "}}" }}"
-              Content-Type: "application/json"
-            validate_certs: false
-            status_code: [201, 409]
-          register: r_keycloak_user
-          retries: 3
-          delay: 2
-          until: r_keycloak_user.status in [201, 409]
-          loop: '{{ "{{" }} cluster_users {{ "}}" }}'
-          ignore_errors: true
+        # - name: Create Keycloak users from cluster vars
+        #   ansible.builtin.uri:
+        #     url: '{{ "{{" }} keycloak_url {{ "}}" }}/admin/realms/{{ "{{" }} keycloak_realm {{ "}}" }}/users'
+        #     method: POST
+        #     body_format: json
+        #     body:
+        #       username: '{{ "{{" }} item {{ "}}" }}'
+        #       email: '{{ "{{" }} item {{ "}}" }}@opentlc.com'
+        #       emailVerified: true
+        #       enabled: true
+        #       firstName: '{{ "{{" }} item | capitalize {{ "}}" }}'
+        #       lastName: 'User'
+        #       credentials:
+        #         - type: password
+        #           value: '{{ "{{" }} item[:3] {{ "}}" }}2025!!'
+        #           temporary: false
+        #     headers:
+        #       Authorization: "Bearer {{ "{{" }} keycloak_access_token {{ "}}" }}"
+        #       Content-Type: "application/json"
+        #     validate_certs: false
+        #     status_code: [201, 409]
+        #   register: r_keycloak_user
+        #   retries: 3
+        #   delay: 2
+        #   until: r_keycloak_user.status in [201, 409]
+        #   loop: '{{ "{{" }} cluster_users {{ "}}" }}'
+        #   ignore_errors: true
 
-        - name: Display user creation results
-          ansible.builtin.debug:
-            msg: "User {{ "{{" }} item.item {{ "}}" }}: {{ "{{" }} 'Created' if item.status == 201 else 'Already exists' if item.status == 409 else 'Failed' {{ "}}" }}"
-          loop: '{{ "{{" }} r_keycloak_user.results | default([]) {{ "}}" }}'
-          loop_control:
-            label: "{{ "{{" }} item.item {{ "}}" }}"
+        # - name: Display user creation results
+        #   ansible.builtin.debug:
+        #     msg: "User {{ "{{" }} item.item {{ "}}" }}: {{ "{{" }} 'Created' if item.status == 201 else 'Already exists' if item.status == 409 else 'Failed' {{ "}}" }}"
+        #   loop: '{{ "{{" }} r_keycloak_user.results | default([]) {{ "}}" }}'
+        #   loop_control:
+        #     label: "{{ "{{" }} item.item {{ "}}" }}"
 
