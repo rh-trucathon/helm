@@ -16,6 +16,51 @@ metadata:
   name: gitlab-config-job-playbook
   namespace: {{ .Values.namespace }}
 data:
+  vars/opencodequest.yaml: |
+    opencodequest:
+      clusters:
+        - name: atlantis
+          users: [ "rubeus", "johnwr", "howard" ,
+                  "niteow2", "blackp", "moondra" , 
+                  "captainam" , "saria" , "humanb" ,
+                  "rachel" , "mercury" , "thepun" ,
+                  "bishop" , "hogun" , "tempera",
+                  "rh1", "rh2", "rh3" ]
+        - name: central
+          users: [ "redgua", "oracle", "misango" ,
+                  "penance", "hesh", "shockwa" ,
+                  "blackl" , "adawon" , "wonder" ,
+                  "newtsc" , "jonatha" , "ironsp" ,
+                  "tigra" , "cloak" , "aquagir" ,
+                  "rh1", "rh2", "rh3" ]
+        - name: gotham
+          users: [ "reedri", "bethany", "babygr" ,
+                  "rocket", "jonsno", "lightsp" ,
+                  "captain" , "coleyo" , "mariah" ,
+                  "niteow" , "morita" , "sprite" ,
+                  "reaper" , "shatter" , "acegri" ,
+                  "rh1", "rh2", "rh3" ]
+        - name: madripoor
+          users: [ "masong", "yorick", "sokka" ,
+                    "cypher", "lucian", "volstag" ,
+                    "hellboy" , "bixcal" , "wonderg" ,
+                    "resista" , "sydney" , "cliffju" ,
+                    "theque" , "ironfi" , "henryj" ,
+                    "rh1", "rh2", "rh3" ]
+        - name: metropolis
+          users: [ "spider", "valkyri", "ironma" ,
+                  "dreamg", "batman", "double" ,
+                  "billyl" , "cynthia" , "atom" ,
+                  "sonyab" , "coyote" , "jackbr" ,
+                  "greatk" , "kelpie" , "renaro" ,
+                  "rh1", "rh2", "rh3" ]
+        - name: wakanda
+          users: [ "harriso", "wildcat", "ericaj" ,
+                  "blackw", "spring", "doctor" ,
+                  "echo" , "sergean" , "turanga" ,
+                  "alinap" , "revali" , "delphyn" ,
+                  "alfred" , "fordpi" , "bigbos" ,
+                  "rh1", "rh2", "rh3" ]
   playbook.yaml: |
     - name: Configure GitLab
       hosts: localhost
